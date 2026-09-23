@@ -1,0 +1,39 @@
+<mujoco model="so_arm100 scene">
+  <include file="so_arm100.xml"/>
+
+  <visual>
+    <headlight diffuse="0.6 0.6 0.6" ambient="0.3 0.3 0.3" specular="0 0 0"/>
+    <rgba haze="0.15 0.25 0.35 1"/>
+    <global azimuth="45" elevation="-20" offwidth="960" offheight="720"/>
+  </visual>
+
+  <asset>
+    <texture type="skybox" builtin="gradient" rgb1="0.3 0.5 0.7" rgb2="0 0 0" width="512" height="3072"/>
+    <texture type="2d" name="groundplane" builtin="checker" mark="edge" rgb1="0.2 0.3 0.4" rgb2="0.1 0.2 0.3"
+      markrgb="0.8 0.8 0.8" width="300" height="300"/>
+    <material name="groundplane" texture="groundplane" texuniform="true" texrepeat="5 5" reflectance="0.2"/>
+  </asset>
+
+  <worldbody>
+    <light pos="0 0 1.5" dir="0 0 -1" directional="true"/>
+    <geom name="floor" size="0 0 0.05" type="plane" material="groundplane"/>
+
+    <!-- Dynamic cube: 2cm cube, light plastic-ish density, high friction so the
+         jaw (whose pads span roughly 2-3cm apart when open) can plausibly grip it. -->
+    <body name="cube" pos="0 -0.18 0.01">
+      <freejoint name="cube_freejoint"/>
+      <geom name="cube_geom" type="box" size="0.01 0.01 0.01" rgba="0.8 0.2 0.2 1"
+        density="500" friction="1.5 0.005 0.0001" solimp="2 1 0.01" solref="0.01 1"/>
+    </body>
+
+    <!-- Static bin: bottom plate + 4 walls, no joint so it is welded to the world.
+         Interior is 8x8cm x 3cm tall, positioned within the arm's reach next to the cube. -->
+    <body name="bin" pos="0.12 -0.18 0">
+      <geom name="bin_bottom" type="box" size="0.044 0.044 0.002" pos="0 0 0.002" rgba="0.3 0.3 0.35 1"/>
+      <geom name="bin_wall_px" type="box" size="0.004 0.044 0.015" pos="0.044 0 0.019" rgba="0.3 0.3 0.35 1"/>
+      <geom name="bin_wall_nx" type="box" size="0.004 0.044 0.015" pos="-0.044 0 0.019" rgba="0.3 0.3 0.35 1"/>
+      <geom name="bin_wall_py" type="box" size="0.044 0.004 0.015" pos="0 0.044 0.019" rgba="0.3 0.3 0.35 1"/>
+      <geom name="bin_wall_ny" type="box" size="0.044 0.004 0.015" pos="0 -0.044 0.019" rgba="0.3 0.3 0.35 1"/>
+    </body>
+  </worldbody>
+</mujoco>
